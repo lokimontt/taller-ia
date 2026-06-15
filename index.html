@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0B1220">
+<title>Taller IA · Los Muermos</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  :root{
+    --bg:#0B1220;--bg2:#111A2E;--card:#162038;--line:#243154;
+    --txt:#F1F5F9;--mut:#94A3B8;--acc:#FACC15;--acc2:#22D3EE;
+    --ok:#34D399;--bad:#F87171;--warn:#FB923C;--purple:#A78BFA;
+    --r:14px;--rs:8px;
+  }
+  html,body{height:100%;overflow-x:hidden}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+    background:var(--bg);color:var(--txt);line-height:1.5;
+    min-height:100vh;padding-bottom:90px;
+  }
+  .top{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:10px 14px;border-bottom:1px solid var(--line);
+    background:var(--bg2);position:sticky;top:0;z-index:50;
+  }
+  .top .brand{font-size:11px;color:var(--mut);letter-spacing:.5px;font-weight:600}
+  .top .step{font-size:12px;color:var(--acc);font-weight:700;margin-top:2px}
+  .top .points{
+    display:flex;align-items:center;gap:6px;
+    background:linear-gradient(135deg,#1a2547,#243154);
+    border:1px solid var(--acc);border-radius:20px;padding:6px 12px;
+    font-weight:800;color:var(--acc);font-size:14px;
+  }
+  .bar{height:3px;background:var(--line);overflow:hidden}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .4s}
+
+  .wrap{max-width:680px;margin:0 auto;padding:14px}
+
+  h1{font-size:26px;line-height:1.15;margin-bottom:8px;font-weight:800}
+  h2{font-size:19px;margin:14px 0 8px;font-weight:700}
+  h3{font-size:13px;margin:14px 0 8px;font-weight:700;color:var(--acc2);text-transform:uppercase;letter-spacing:.5px}
+  p{color:#CBD5E1;margin-bottom:10px;font-size:14px}
+  .hint{font-size:12px;color:var(--mut);line-height:1.5}
+  .big{font-size:18px;font-weight:600;line-height:1.4;color:#CBD5E1}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:12px}
+  .card.acc{border-color:var(--acc)}
+  .card.cyan{border-color:var(--acc2)}
+  .card.glow{box-shadow:0 0 0 1px var(--acc2),0 8px 32px rgba(34,211,238,.1)}
+  .card.warn{border-color:var(--warn);background:rgba(251,146,60,.05)}
+
+  textarea,input[type=text],select{
+    width:100%;background:var(--bg);color:var(--txt);border:1px solid var(--line);
+    border-radius:var(--rs);padding:11px 13px;font-size:16px;font-family:inherit;
+    outline:none;resize:vertical;
+  }
+  textarea{min-height:80px}
+  textarea:focus,input:focus,select:focus{border-color:var(--acc2)}
+  label{display:block;font-size:12px;color:var(--mut);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:13px 16px;border-radius:var(--rs);border:none;cursor:pointer;
+    font-size:15px;font-weight:700;font-family:inherit;
+    background:var(--acc);color:#1a1a1a;width:100%;margin-top:8px;
+    transition:transform .1s, box-shadow .2s;
+  }
+  .btn:active{transform:scale(.97)}
+  .btn.alt{background:var(--card);color:var(--txt);border:1px solid var(--line)}
+  .btn.cyan{background:var(--acc2);color:#0a1a22}
+  .btn.green{background:var(--ok);color:#0a2418}
+  .btn.purple{background:var(--purple);color:#1a0f2e}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--txt)}
+  .btn.sm{padding:8px 12px;font-size:13px;width:auto}
+  .btn.xs{padding:6px 10px;font-size:12px;width:auto}
+  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+  .btn.shine{box-shadow:0 0 16px rgba(250,204,21,.3)}
+
+  .nav{
+    position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--line);
+    padding:10px 14px;display:flex;gap:8px;z-index:40;
+  }
+  .nav .btn{margin:0}
+  .nav .btn.ghost{flex:0 0 auto;width:auto;padding:13px 14px}
+  .nav .btn:not(.ghost){flex:1}
+
+  .opt{
+    background:var(--bg);border:2px solid var(--line);border-radius:var(--rs);
+    padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all .15s;
+  }
+  .opt:active{transform:scale(.98)}
+  .opt.sel{border-color:var(--acc);background:rgba(250,204,21,.08)}
+  .opt.ok{border-color:var(--ok);background:rgba(52,211,153,.1)}
+  .opt.bad{border-color:var(--bad);background:rgba(248,113,113,.1)}
+  .opt .lbl{font-size:11px;color:var(--mut);font-weight:700;margin-bottom:4px;letter-spacing:.5px}
+  .opt .txt{font-size:14px;line-height:1.4}
+
+  .pill{display:inline-block;padding:3px 9px;border-radius:20px;background:var(--line);font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--mut)}
+  .pill.ok{background:rgba(52,211,153,.18);color:var(--ok)}
+  .pill.bad{background:rgba(248,113,113,.18);color:var(--bad)}
+  .pill.acc{background:rgba(250,204,21,.18);color:var(--acc)}
+  .pill.cyan{background:rgba(34,211,238,.18);color:var(--acc2)}
+
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  .row .btn{flex:1;min-width:100px}
+
+  .menu{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+  .menu .mi{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+    padding:12px;cursor:pointer;transition:all .15s;
+  }
+  .menu .mi:active{transform:scale(.97)}
+  .menu .mi.done{border-color:var(--ok)}
+  .menu .mi .num{font-size:10px;color:var(--mut);font-weight:700;letter-spacing:1px;margin-bottom:5px}
+  .menu .mi .t{font-size:13px;font-weight:700;line-height:1.3}
+  .menu .mi .s{font-size:11px;color:var(--mut);margin-top:3px}
+  .menu .mi.done .num{color:var(--ok)}
+
+  .out{
+    background:var(--bg);border:1px solid var(--acc2);border-radius:var(--rs);
+    padding:14px;margin-top:10px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:13px;line-height:1.6;white-space:pre-wrap;color:#E2E8F0;position:relative;
+  }
+  .out .cp{position:absolute;top:6px;right:6px;background:var(--acc2);color:#0a1a22;border:none;padding:5px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer}
+
+  .typing::after{content:'▊';color:var(--acc2);animation:blink 1s infinite;margin-left:2px}
+  @keyframes blink{50%{opacity:0}}
+
+  .compare{display:grid;grid-template-columns:1fr;gap:10px}
+  @media(min-width:520px){.compare{grid-template-columns:1fr 1fr}}
+  .ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--rs);padding:12px;display:flex;flex-direction:column}
+  .ccard.bad{border-color:var(--bad)}
+  .ccard.good{border-color:var(--ok)}
+  .ccard .head{font-size:11px;font-weight:800;letter-spacing:.5px;margin-bottom:8px}
+  .ccard .prompt{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px;font-style:italic;font-size:13px;margin-bottom:8px;color:#CBD5E1}
+  .ccard .resp{background:var(--bg);border-radius:6px;padding:10px;font-size:12px;color:#CBD5E1;line-height:1.55;flex:1;min-height:120px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap}
+
+  .score{display:flex;justify-content:space-around;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:var(--rs);padding:10px;margin-bottom:12px}
+  .score .col{text-align:center;flex:1}
+  .score .v{font-size:22px;font-weight:800;color:var(--acc)}
+  .score .l{font-size:9px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+
+  .confetti{position:fixed;width:8px;height:8px;top:-10px;animation:fall 3s linear forwards;z-index:100;pointer-events:none}
+  @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+  .floatup{
+    position:fixed;font-size:24px;font-weight:800;color:var(--acc);
+    pointer-events:none;animation:floatup 1.5s ease-out forwards;z-index:200;
+    text-shadow:0 0 12px rgba(250,204,21,.6);
+  }
+  @keyframes floatup{
+    0%{opacity:0;transform:translateY(0) scale(.5)}
+    20%{opacity:1;transform:translateY(-10px) scale(1.2)}
+    100%{opacity:0;transform:translateY(-80px) scale(1)}
+  }
+
+  .badge{
+    display:inline-flex;align-items:center;gap:6px;padding:4px 10px;
+    background:linear-gradient(135deg,rgba(250,204,21,.2),rgba(250,204,21,.05));
+    border:1px solid var(--acc);border-radius:16px;font-size:11px;font-weight:700;color:var(--acc);
+    margin:2px 4px 2px 0;
+  }
+
+  .loader{display:inline-flex;gap:4px;align-items:center;color:var(--acc2);font-size:13px}
+  .loader::before{content:'';width:10px;height:10px;border:2px solid var(--acc2);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .footer-note{text-align:center;font-size:10px;color:var(--mut);margin-top:18px;padding:0 14px;line-height:1.5}
+
+  @media (max-width:380px){
+    h1{font-size:22px}
+    .menu{grid-template-columns:1fr}
+    .btn{font-size:14px;padding:12px 13px}
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div>
+    <div class="brand">TALLER IA · LOS MUERMOS</div>
+    <div id="stepLabel" class="step">Inicio</div>
+  </div>
+  <div class="points" id="pointsBox">
+    <span>★</span><span id="pointsVal">0</span>
+  </div>
+</div>
+<div class="bar"><i id="progressBar" style="width:0%"></i></div>
+
+<div class="wrap" id="app"></div>
+
+<div class="nav" id="nav" style="display:none">
+  <button class="btn ghost" onclick="prevStep()">← Atrás</button>
+  <button class="btn" id="nextBtn" onclick="nextStep()">Siguiente →</button>
+</div>
+
+<script>
+/* ============================================================
+   ESTADO
+============================================================ */
+const STORE_KEY = 'tallerIA_v4';
+const DEFAULTS = {
+  purpose:'', obstacle:'', time:'', level:'1°-2° medio',
+  promptBuilt:'', builderRole:'', builderTask:'', builderCtx:'', builderFmt:'',
+  score:0,
+  detective:{}, hunts:{},
+  usesSel:{}, plan:'',
+  commitDo:'', commitDont:'',
+  step:'home',
+  badges:[]
+};
+let state = load();
+function load(){
+  try{
+    const s = JSON.parse(localStorage.getItem(STORE_KEY)) || {};
+    return {...DEFAULTS, ...s};
+  }catch(e){ return {...DEFAULTS}; }
+}
+function save(){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+function reset(){
+  if(confirm('¿Borrar tu progreso?')){
+    localStorage.removeItem(STORE_KEY);
+    state = {...DEFAULTS};
+    save(); location.reload();
+  }
+}
+
+/* ============================================================
+   PUNTOS Y FEEDBACK
+============================================================ */
+function addPoints(n, badge){
+  state.score += n;
+  if(badge && !state.badges.includes(badge)) state.badges.push(badge);
+  save();
+  document.getElementById('pointsVal').textContent = state.score;
+  const el = document.createElement('div');
+  el.className = 'floatup';
+  el.textContent = '+' + n;
+  const box = document.getElementById('pointsBox');
+  const r = box.getBoundingClientRect();
+  el.style.left = (r.left + r.width/2 - 20) + 'px';
+  el.style.top = (r.top + r.height) + 'px';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 1500);
+}
+
+/* ============================================================
+   RUTEO
+============================================================ */
+const STEPS = [
+  {id:'home',     label:'Inicio'},
+  {id:'purpose',  label:'1. Tu propósito'},
+  {id:'demo',     label:'2. Antes vs Después'},
+  {id:'builder',  label:'3. Constructor'},
+  {id:'detective',label:'4. Detective'},
+  {id:'hunter',   label:'5. Cazador'},
+  {id:'bridge',   label:'6. Tu plan'},
+  {id:'commit',   label:'7. Compromiso'},
+  {id:'close',    label:'Cierre'}
+];
+function go(id){ state.step=id; save(); render(); window.scrollTo(0,0); }
+function goHome(){ go('home'); }
+function curIdx(){ return STEPS.findIndex(s=>s.id===state.step); }
+function nextStep(){ const i=curIdx(); if(i<STEPS.length-1) go(STEPS[i+1].id); }
+function prevStep(){ const i=curIdx(); if(i>0) go(STEPS[i-1].id); }
+
+/* ============================================================
+   UI HELPERS
+============================================================ */
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function copyTxt(btn,txt){
+  navigator.clipboard.writeText(txt).then(()=>{
+    const o=btn.textContent; btn.textContent='✓';
+    setTimeout(()=>btn.textContent=o,1200);
+  });
+}
+function confetti(intense=false){
+  const colors=['#FACC15','#22D3EE','#34D399','#F87171','#A78BFA'];
+  const n = intense?80:40;
+  for(let i=0;i<n;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDelay=(Math.random()*0.5)+'s';
+    c.style.transform=`rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3500);
+  }
+}
+async function typeOut(el, text, speed=10){
+  el.textContent='';
+  el.classList.add('typing');
+  for(let i=0;i<text.length;i++){
+    el.textContent += text[i];
+    if(i%3===0) await new Promise(r=>setTimeout(r, speed));
+  }
+  el.classList.remove('typing');
+}
+
+/* ============================================================
+   RENDER
+============================================================ */
+function render(){
+  const i = curIdx();
+  const st = STEPS[i];
+  document.getElementById('stepLabel').textContent = st.label;
+  document.getElementById('progressBar').style.width = (i/(STEPS.length-1)*100)+'%';
+  document.getElementById('nav').style.display = (state.step==='home'?'none':'flex');
+  document.getElementById('pointsVal').textContent = state.score;
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  const fn = {home:renderHome,purpose:renderPurpose,demo:renderDemo,builder:renderBuilder,detective:renderDetective,hunter:renderHunter,bridge:renderBridge,commit:renderCommit,close:renderClose}[state.step];
+  if(fn) fn(app);
+}
+
+/* ============================================================
+   HOME
+============================================================ */
+function renderHome(c){
+  c.innerHTML = `
+    <div class="card glow">
+      <h1>IA para lo que <span style="color:var(--acc)">tú quieres</span></h1>
+      <p class="big">7 desafíos. Gana puntos. Sale con un plan tuyo.</p>
+    </div>
+
+    <div class="score">
+      <div class="col"><div class="v">${state.score}</div><div class="l">Puntos</div></div>
+      <div class="col"><div class="v">${state.badges.length}</div><div class="l">Logros</div></div>
+      <div class="col"><div class="v">${countDone()}/7</div><div class="l">Completados</div></div>
+    </div>
+
+    <div class="menu" id="menu"></div>
+
+    <button class="btn shine" onclick="go('purpose')" style="margin-top:14px">${countDone()===0?'Empezar →':'Continuar →'}</button>
+
+    <div class="row" style="margin-top:14px">
+      <button class="btn ghost xs" onclick="reset()">Borrar progreso</button>
+    </div>
+    <p class="footer-note">CESFAM Los Muermos · Saludablemente APS · 2026</p>
+  `;
+  const done = {
+    purpose: !!state.purpose,
+    demo:    curIdx()>=2,
+    builder: !!state.promptBuilt,
+    detective: Object.keys(state.detective).length>0,
+    hunter:  Object.keys(state.hunts).length>0,
+    bridge:  !!state.plan,
+    commit:  !!state.commitDo
+  };
+  const items = [
+    {id:'purpose',n:'01',t:'Tu propósito',s:'Qué quieres lograr'},
+    {id:'demo',n:'02',t:'Antes vs Después',s:'Ver la diferencia'},
+    {id:'builder',n:'03',t:'Constructor',s:'Arma TU prompt'},
+    {id:'detective',n:'04',t:'Detective',s:'5 casos'},
+    {id:'hunter',n:'05',t:'Cazador',s:'10 mentiras'},
+    {id:'bridge',n:'06',t:'Tu plan',s:'IA + propósito'},
+    {id:'commit',n:'07',t:'Compromiso',s:'Lo que vas a hacer'}
+  ];
+  document.getElementById('menu').innerHTML = items.map(it=>`
+    <div class="mi ${done[it.id]?'done':''}" onclick="go('${it.id}')">
+      <div class="num">${it.n} ${done[it.id]?'✓':''}</div>
+      <div class="t">${it.t}</div>
+      <div class="s">${it.s}</div>
+    </div>
+  `).join('');
+}
+function countDone(){
+  let n=0;
+  if(state.purpose) n++;
+  if(curIdx()>=2) n++;
+  if(state.promptBuilt) n++;
+  if(Object.keys(state.detective).length>0) n++;
+  if(Object.keys(state.hunts).length>0) n++;
+  if(state.plan) n++;
+  if(state.commitDo) n++;
+  return n;
+}
+
+/* ============================================================
+   PASO 1 · PROPÓSITO
+============================================================ */
+function renderPurpose(c){
+  c.innerHTML = `
+    <div class="card acc">
+      <span class="pill acc">PASO 1 · +5 PUNTOS</span>
+      <h1 style="margin-top:8px">¿Qué quieres hacer en <span style="color:var(--acc)">6 meses</span> que hoy no sabes?</h1>
+      <p>Concreto. Tuyo. No vale "ser mejor estudiante".</p>
+    </div>
+
+    <div class="card">
+      <p class="hint">Ejemplos para inspirarte (no copies):<br>
+      → Pasar inglés con promedio 6+<br>
+      → Hacer mi primer cortometraje con el celular<br>
+      → Aprender a tocar 3 canciones en guitarra<br>
+      → Subir de cinturón en taekwondo<br>
+      → Empezar a programar mi primera app</p>
+    </div>
+
+    <div class="card glow">
+      <label>Mi meta a 6 meses</label>
+      <textarea id="purpose" placeholder="Escribe tu meta concreta...">${esc(state.purpose)}</textarea>
+
+      <label style="margin-top:12px">Qué me cuesta o me bloquea hoy</label>
+      <textarea id="obstacle" placeholder="Lo que no entiendo, lo que me da lata...">${esc(state.obstacle)}</textarea>
+
+      <label style="margin-top:12px">Tiempo real a la semana</label>
+      <input type="text" id="time" placeholder="Ej: 30 min al día" value="${esc(state.time)}">
+
+      <button class="btn" onclick="savePurpose()">Guardar y continuar →</button>
+    </div>
+  `;
+}
+function savePurpose(){
+  state.purpose  = document.getElementById('purpose').value.trim();
+  state.obstacle = document.getElementById('obstacle').value.trim();
+  state.time     = document.getElementById('time').value.trim();
+  if(!state.purpose){ alert('Escribe tu meta'); return; }
+  if(!state._p1Awarded){ addPoints(5,'Propósito definido'); state._p1Awarded=true; }
+  save(); nextStep();
+}
+
+/* ============================================================
+   PASO 2 · DEMO ANTES/DESPUÉS (respuestas plantilla con typing)
+============================================================ */
+function renderDemo(c){
+  const p = state.purpose || 'aprender inglés';
+  const vague = `Ayúdame con ${p}`;
+  const good = `Actúa como mentor. Quiero ${p} en 6 meses. Hoy me cuesta: ${state.obstacle||'no sé por dónde empezar'}. Tengo ${state.time||'poco tiempo'} a la semana. Dame un plan de 3 acciones concretas para esta semana, en lenguaje simple para estudiante de ${state.level}.`;
+
+  c.innerHTML = `
+    <div class="card cyan">
+      <span class="pill cyan">PASO 2 · +10 PUNTOS</span>
+      <h1 style="margin-top:8px">Ve la diferencia.</h1>
+      <p>Mismo objetivo. Dos formas de pedir. Mira qué responde la IA en cada caso.</p>
+    </div>
+
+    <div class="compare">
+      <div class="ccard bad">
+        <div class="head" style="color:var(--bad)">✗ PROMPT VAGO</div>
+        <div class="prompt">"${esc(vague)}"</div>
+        <div class="resp" id="respVague">Presiona el botón ↓</div>
+      </div>
+      <div class="ccard good">
+        <div class="head" style="color:var(--ok)">✓ PROMPT BUENO</div>
+        <div class="prompt">"${esc(good)}"</div>
+        <div class="resp" id="respGood">Presiona el botón ↓</div>
+      </div>
+    </div>
+
+    <button class="btn shine" id="runBtn" onclick="runDemo()" style="margin-top:12px">▶ Mostrar las respuestas</button>
+
+    <div class="card" style="margin-top:14px">
+      <h3>¿Qué cambió?</h3>
+      <p>Cuatro piezas: <strong style="color:var(--acc)">ROL · TAREA · CONTEXTO · FORMATO</strong>. Lo armas en el paso 3.</p>
+    </div>
+  `;
+}
+function buildDemoResponses(){
+  const p = state.purpose || 'tu meta';
+  const obs = state.obstacle || 'lo que te cuesta';
+  const t = state.time || 'el tiempo que tengas';
+  // Respuesta VAGA: pregunta de vuelta, genérica, sin foco
+  const vague = `Para ayudarte mejor con esto necesito que me cuentes más. ¿Cuál es tu nivel actual? ¿Para qué lo necesitas? ¿Cuánto tiempo le puedes dedicar? Mientras tanto, aquí van algunos consejos generales:
+
+— Sé constante, estudia todos los días un poco.
+— Busca recursos en internet, hay muchos gratis.
+— Practica lo que vayas aprendiendo.
+— No te desanimes, los progresos toman tiempo.
+— Pide ayuda cuando lo necesites.
+
+Si me das más contexto puedo darte algo más específico.`;
+
+  // Respuesta BUENA: plan de 3 acciones específicas
+  const good = `Vamos directo al plan para esta semana. Tres acciones concretas, ajustadas a "${p}" y a que te cuesta "${obs}".
+
+ACCIÓN 1 — Lunes a miércoles (15 min/día)
+Identifica una dificultad específica dentro de lo que te cuesta. No la resuelvas todavía, solo descríbela: ¿qué pasa cuando lo intentas? Anótalo. Esto te da claridad para atacarla.
+
+ACCIÓN 2 — Jueves (30 min)
+Busca un recurso confiable (video, app o tutorial) que ataque esa dificultad concreta. Hazlo de principio a fin, sin saltarte partes. Anota una idea clave que rescates.
+
+ACCIÓN 3 — Sábado (45 min)
+Aplica lo aprendido en un ejercicio práctico tuyo. Si no resulta, repite la acción 2 con otro recurso. Si resulta, sube la dificultad un nivel.
+
+Cierre de la semana (5 min, domingo)
+Pregúntate dos cosas: ¿qué avancé? ¿qué pruebo la próxima semana?
+
+Importante: este plan asume ${t}. Si tienes menos, recorta los tiempos. Si tienes más, agrega práctica adicional el viernes.`;
+  return {vague, good};
+}
+async function runDemo(){
+  const btn = document.getElementById('runBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loader">Escribiendo...</span>';
+  const {vague, good} = buildDemoResponses();
+  const elV = document.getElementById('respVague');
+  const elG = document.getElementById('respGood');
+  elV.textContent=''; elG.textContent='';
+  typeOut(elV, vague, 6);
+  await typeOut(elG, good, 6);
+  btn.innerHTML = '✓ Listo';
+  if(!state._p2Awarded){ addPoints(10,'Vio la diferencia'); state._p2Awarded=true; save(); }
+}
+
+/* ============================================================
+   PASO 3 · CONSTRUCTOR
+============================================================ */
+const ROLES = [
+  {v:'tutor de matemáticas', t:'Tutor de matemáticas'},
+  {v:'profesor de inglés',   t:'Profe de inglés'},
+  {v:'entrenador deportivo', t:'Entrenador deportivo'},
+  {v:'coach de hábitos',     t:'Coach de hábitos'},
+  {v:'mentor en programación',t:'Mentor de programación'},
+  {v:'editor de textos',     t:'Editor de textos'},
+  {v:'guía de estudio',      t:'Guía de estudio'},
+  {v:'mentor creativo',      t:'Mentor creativo'},
+  {v:'experto en ciencias',  t:'Experto en ciencias'},
+  {v:'orientador vocacional',t:'Orientador vocacional'}
+];
+const FORMATS = [
+  '1 explicación corta + 3 ejemplos + 5 ejercicios con respuestas',
+  'Plan de 4 semanas, día por día, con tiempos estimados',
+  'Lista paso a paso con qué hacer y qué evitar',
+  'Resumen en 5 puntos clave + 1 acción concreta',
+  'Cuestionario tipo prueba con respuestas al final',
+  'Comparación tipo tabla con pros y contras',
+  'Historia o ejemplo de la vida real que explique el tema'
+];
+function renderBuilder(c){
+  const role = state.builderRole || ROLES[0].v;
+  const task = state.builderTask || (state.purpose || '');
+  const ctx  = state.builderCtx  || `Soy estudiante de ${state.level}. ${state.obstacle?'Me cuesta '+state.obstacle+'. ':''}${state.time?'Tengo '+state.time+' a la semana.':''}`.trim();
+  const fmt  = state.builderFmt  || FORMATS[0];
+
+  c.innerHTML = `
+    <div class="card acc">
+      <span class="pill acc">PASO 3 · +20 PUNTOS</span>
+      <h1 style="margin-top:8px">Arma tu prompt</h1>
+      <p>Las 4 piezas. En este orden.</p>
+    </div>
+
+    <div class="card">
+      <label>① ROL · ¿Qué papel toma la IA?</label>
+      <select id="role">${ROLES.map(r=>`<option value="${r.v}" ${r.v===role?'selected':''}>${r.t}</option>`).join('')}</select>
+
+      <label style="margin-top:12px">② TAREA · ¿Qué quieres que haga?</label>
+      <textarea id="task" placeholder="Ayudarme a lograr...">${esc(task)}</textarea>
+
+      <label style="margin-top:12px">③ CONTEXTO · Quién eres y qué te cuesta</label>
+      <textarea id="ctx">${esc(ctx)}</textarea>
+
+      <label style="margin-top:12px">④ FORMATO · ¿Cómo lo quieres?</label>
+      <select id="fmt">${FORMATS.map(f=>`<option value="${esc(f)}" ${f===fmt?'selected':''}>${f}</option>`).join('')}</select>
+
+      <button class="btn cyan" onclick="buildPrompt()">Generar mi prompt →</button>
+    </div>
+
+    <div id="builderOut"></div>
+  `;
+  if(state.promptBuilt) showBuilt(state.promptBuilt);
+}
+function buildPrompt(){
+  const role = document.getElementById('role').value;
+  const task = document.getElementById('task').value.trim();
+  const ctx  = document.getElementById('ctx').value.trim();
+  const fmt  = document.getElementById('fmt').value;
+  if(!task){ alert('Escribe qué quieres lograr'); return; }
+  state.builderRole=role; state.builderTask=task; state.builderCtx=ctx; state.builderFmt=fmt;
+  const p = `Actúa como ${role}.\n${task}\n${ctx}\nFormato de la respuesta: ${fmt}.`;
+  state.promptBuilt = p;
+  if(!state._p3Awarded){ addPoints(20,'Constructor de prompt'); state._p3Awarded=true; }
+  save(); showBuilt(p);
+}
+function showBuilt(p){
+  document.getElementById('builderOut').innerHTML = `
+    <div class="card glow">
+      <h3 style="color:var(--ok)">✓ Tu prompt está listo</h3>
+      <div class="out">${esc(p)}<button class="cp" onclick="copyTxt(this,${JSON.stringify(p).replace(/"/g,'&quot;')})">Copiar</button></div>
+      <p class="hint" style="margin-top:10px">Ahora pruébalo en una IA real:</p>
+      <div class="row">
+        <button class="btn cyan" onclick="openAndCopy('https://chat.openai.com/')">📋 ChatGPT</button>
+        <button class="btn purple" onclick="openAndCopy('https://gemini.google.com/')">📋 Gemini</button>
+        <button class="btn alt" onclick="openAndCopy('https://claude.ai/')">📋 Claude</button>
+      </div>
+      <p class="hint" style="margin-top:8px">→ El prompt queda copiado. Solo pégalo (mantener apretado → pegar) en el chat de la IA que prefieras.</p>
+    </div>
+  `;
+}
+function openAndCopy(url){
+  navigator.clipboard.writeText(state.promptBuilt).then(()=>{
+    window.open(url, '_blank');
+  });
+}
+
+/* ============================================================
+   PASO 4 · DETECTIVE (5 casos)
+============================================================ */
+const DETECTIVE_CASES = [
+  {
+    id:'d1', q:'Quieres un resumen del libro El Caballero de la Armadura Oxidada.',
+    opts:[
+      {l:'A', t:'Hazme un resumen del Caballero de la Armadura Oxidada', ok:false},
+      {l:'B', t:'Resúmeme El Caballero de la Armadura Oxidada en 10 líneas, con las 3 ideas principales, en lenguaje simple para 1° medio', ok:true},
+      {l:'C', t:'Hablame del libro ese del caballero, no me acuerdo bien del título', ok:false}
+    ],
+    why:'B tiene los 4 elementos: tarea clara, contexto (1° medio), formato (10 líneas + 3 ideas) y rol implícito. A le falta CONTEXTO y FORMATO. C le falta TAREA específica.'
+  },
+  {
+    id:'d2', q:'Quieres ayuda para preparar una prueba de historia.',
+    opts:[
+      {l:'A', t:'Estudia conmigo historia', ok:false},
+      {l:'B', t:'Actúa como tutor de historia. Tengo prueba el lunes de la Independencia de Chile. Hazme 10 preguntas tipo prueba con sus respuestas, dificultad media, para 2° medio', ok:true},
+      {l:'C', t:'Necesito pasar historia', ok:false}
+    ],
+    why:'B incluye ROL (tutor), TAREA (10 preguntas tipo prueba), CONTEXTO (Independencia de Chile, 2° medio) y FORMATO (con respuestas, dificultad media).'
+  },
+  {
+    id:'d3', q:'Quieres mejorar tu inglés para entender canciones.',
+    opts:[
+      {l:'A', t:'Quiero aprender inglés escuchando música', ok:false},
+      {l:'B', t:'Enséñame inglés', ok:false},
+      {l:'C', t:'Actúa como profe de inglés básico. Quiero entender letras de canciones en inglés. Dame 15 palabras frecuentes en canciones pop, con su traducción y una frase de ejemplo. Mi nivel: principiante', ok:true}
+    ],
+    why:'C es la única que tiene los 4 elementos. A dice qué quieres pero no qué hacer. B es la peor: sin contexto, sin formato, sin nada.'
+  },
+  {
+    id:'d4', q:'Quieres ideas para un proyecto de ciencias sobre energía.',
+    opts:[
+      {l:'A', t:'Soy estudiante de 1° medio y necesito hacer un proyecto de ciencias sobre energías renovables. Tengo 2 semanas y materiales caseros. Dame 5 ideas de experimentos seguros, con materiales fáciles de conseguir y pasos claros', ok:true},
+      {l:'B', t:'Ideas para ciencias', ok:false},
+      {l:'C', t:'Proyecto de energía', ok:false}
+    ],
+    why:'A es la ganadora: contexto (1° medio, 2 semanas, materiales caseros), tarea clara (5 ideas), formato (con materiales y pasos), restricción importante (seguros).'
+  },
+  {
+    id:'d5', q:'Quieres que la IA te ayude a escribir un mensaje a un profe pidiendo postergar una entrega.',
+    opts:[
+      {l:'A', t:'Ayúdame a mandar un mensaje al profe', ok:false},
+      {l:'B', t:'Escribe el mensaje', ok:false},
+      {l:'C', t:'Actúa como un estudiante respetuoso. Escríbeme un correo de 6 líneas máximo a mi profe de matemáticas, pidiendo postergar la entrega del trabajo grupal por enfermedad. Tono formal pero cercano. Yo me llamo (tu nombre) y soy de 8° A', ok:true}
+    ],
+    why:'C controla el tono (formal pero cercano), el largo (6 líneas), el motivo (enfermedad), y agrega tus datos. La IA entrega algo usable de inmediato.'
+  }
+];
+
+function renderDetective(c){
+  const done = Object.keys(state.detective).length;
+  const total = DETECTIVE_CASES.length;
+  c.innerHTML = `
+    <div class="card cyan">
+      <span class="pill cyan">PASO 4 · +10 POR CADA ACIERTO</span>
+      <h1 style="margin-top:8px">Detective de prompts</h1>
+      <p>${total} casos. ¿Cuál es el mejor prompt en cada uno?</p>
+      <div style="margin-top:8px"><span class="pill acc">${done}/${total} resueltos</span></div>
+    </div>
+    <div id="detList"></div>
+  `;
+  document.getElementById('detList').innerHTML = DETECTIVE_CASES.map(d=>{
+    const ans = state.detective[d.id];
+    return `
+      <div class="card">
+        <p style="margin-bottom:10px"><strong>${esc(d.q)}</strong></p>
+        ${d.opts.map((o,i)=>{
+          let cls='opt';
+          if(ans!=null){
+            if(o.ok) cls+=' ok';
+            else if(ans===i) cls+=' bad';
+          }
+          return `<div class="${cls}" ${ans==null?`onclick="voteDet('${d.id}',${i})"`:''}>
+            <div class="lbl">OPCIÓN ${o.l}</div>
+            <div class="txt">${esc(o.t)}</div>
+          </div>`;
+        }).join('')}
+        ${ans!=null ? `
+          <div class="card warn" style="margin-top:10px;margin-bottom:0">
+            <span class="pill ${d.opts[ans].ok?'ok':'bad'}">${d.opts[ans].ok?'✓ ACERTASTE':'✗ NO ERA ESA'}</span>
+            <p style="margin-top:8px;font-size:13px">${d.why}</p>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
+}
+function voteDet(id, i){
+  const d = DETECTIVE_CASES.find(x=>x.id===id);
+  state.detective[id] = i;
+  if(d.opts[i].ok) addPoints(10);
+  save();
+  if(Object.keys(state.detective).length === DETECTIVE_CASES.length){
+    confetti();
+    if(!state._detBadge){ state.badges.push('Detective experto'); state._detBadge=true; save(); }
+  }
+  renderDetective(document.getElementById('app'));
+}
+
+/* ============================================================
+   PASO 5 · CAZADOR (10 casos)
+============================================================ */
+const HUNTER_CASES = [
+  {
+    id:'h1', risk:'ALTO',
+    prompt:'"Resúmeme La sombra del puma azul de Isabel Allende"',
+    fake_response:'La sombra del puma azul es una novela de Isabel Allende publicada en 2007. Cuenta la historia de Catalina, una joven mapuche del sur de Chile, y su lucha por proteger las tierras ancestrales de su comunidad. La novela explora temas como identidad, naturaleza y resistencia cultural...',
+    ok:'no',
+    expl:'TRAMPA: ese libro NO EXISTE. La IA inventa autor, trama y personajes con total seguridad. Regla: si te da un dato muy específico de algo que no conoces, verifica que exista primero.'
+  },
+  {
+    id:'h2', risk:'ALTO',
+    prompt:'"¿Cuántos habitantes tiene Los Muermos según el censo 2024?"',
+    fake_response:'Según el censo de 2024 del INE, la comuna de Los Muermos tiene 18.426 habitantes, lo que representa un crecimiento del 5,3% respecto al censo anterior...',
+    ok:'no',
+    expl:'TRAMPA: la IA puede no tener datos actualizados del censo, y aunque el número parezca real, puede ser inventado con precisión falsa. Verifica en censo.cl o INE.cl.'
+  },
+  {
+    id:'h3', risk:'BAJO',
+    prompt:'"Explícame qué es la fotosíntesis para 1° medio"',
+    fake_response:'La fotosíntesis es el proceso por el cual las plantas usan la luz del sol, el agua y el dióxido de carbono para producir glucosa (alimento) y liberar oxígeno...',
+    ok:'si',
+    expl:'OK: conocimiento general estable, sin datos cambiantes. Bajo riesgo de alucinación. Aun así, contrasta con tu libro si lo vas a usar para una prueba.'
+  },
+  {
+    id:'h4', risk:'ALTO',
+    prompt:'"Dame 5 citas textuales del Presidente sobre educación"',
+    fake_response:'1. "La educación es la herramienta más poderosa para cambiar el mundo"\n2. "No descansaremos hasta que cada niño chileno tenga acceso a educación de calidad"\n3. "La gratuidad universitaria es solo el primer paso"...',
+    ok:'no',
+    expl:'TRAMPA: las citas textuales son lo que la IA más inventa. Pueden sonar reales pero ser falsas. Si vas a citar a alguien, busca la fuente original (medios oficiales, video del discurso).'
+  },
+  {
+    id:'h5', risk:'MEDIO',
+    prompt:'"¿Cuánto es 1.247 × 89?"',
+    fake_response:'1.247 × 89 = 110.983',
+    ok:'no',
+    expl:'TRAMPA: la IA NO calcula, predice. Esta vez el resultado es correcto (1.247 × 89 = 110.983 ✓), pero puede equivocarse en cálculos largos sin avisar. Para cálculos exactos: calculadora, o pídele que use código.'
+  },
+  {
+    id:'h6', risk:'BAJO',
+    prompt:'"Dime 3 ideas para conservar fruta sin refrigerador"',
+    fake_response:'1. Deshidratación al sol o en horno bajo (45-60°C)\n2. Conservas en almíbar (frutas en agua con azúcar, hervidas)\n3. Mermeladas: hervir con azúcar hasta espesar...',
+    ok:'si',
+    expl:'OK: técnicas conocidas, prácticas, estables. Bajo riesgo. Si vas a hacer una conserva en serio, complementa con video tutorial para no enfermarte.'
+  },
+  {
+    id:'h7', risk:'ALTO',
+    prompt:'"¿En qué año nació Gustavo Cerati?"',
+    fake_response:'Gustavo Cerati nació el 11 de agosto de 1959 en Buenos Aires, Argentina.',
+    ok:'si',
+    expl:'OK ESTA VEZ: el dato es correcto. Pero ojo: para nombres menos famosos, la IA inventa fechas con la misma seguridad. Verifica si vas a usar el dato.'
+  },
+  {
+    id:'h8', risk:'ALTO',
+    prompt:'"¿Qué efectos secundarios tiene este medicamento?"',
+    fake_response:'Los efectos secundarios más comunes incluyen: somnolencia leve, sequedad bucal, mareos ocasionales...',
+    ok:'no',
+    expl:'TRAMPA DE SALUD: nunca uses la IA como fuente única para medicamentos. Pregunta a tu médico o consulta el prospecto oficial. Las consecuencias de un error aquí son graves.'
+  },
+  {
+    id:'h9', risk:'MEDIO',
+    prompt:'"Tradúceme \'hello, how are you\' al español"',
+    fake_response:'"Hola, ¿cómo estás?"',
+    ok:'si',
+    expl:'OK: traducción simple y estándar. La IA traduce bien frases comunes. En textos largos o técnicos, revisa palabra por palabra.'
+  },
+  {
+    id:'h10', risk:'ALTO',
+    prompt:'"Dame el código fuente de TikTok"',
+    fake_response:'Aquí tienes una versión simplificada del código fuente de TikTok... [muestra código]',
+    ok:'no',
+    expl:'TRAMPA: la IA no tiene acceso a códigos privados de empresas. Si te muestra "el código de TikTok", está inventando. Lo que sí puede: explicarte cómo funcionan apps similares o ayudarte a programar TU propia app.'
+  }
+];
+
+function renderHunter(c){
+  const done = Object.keys(state.hunts).length;
+  const total = HUNTER_CASES.length;
+  c.innerHTML = `
+    <div class="card warn">
+      <span class="pill bad">PASO 5 · +10 POR CADA ACIERTO</span>
+      <h1 style="margin-top:8px">Cazador de mentiras</h1>
+      <p>${total} casos. La IA respondió cada uno. ¿Confías o verificas?</p>
+      <div style="margin-top:8px"><span class="pill acc">${done}/${total} cazados</span></div>
+    </div>
+    <div id="hunts"></div>
+  `;
+  document.getElementById('hunts').innerHTML = HUNTER_CASES.map(h=>{
+    const ans = state.hunts[h.id];
+    const ok  = ans===h.ok;
+    return `
+      <div class="card" style="${ans?'border-color:'+(ok?'var(--ok)':'var(--bad)'):''}">
+        <span class="pill ${h.risk==='ALTO'?'bad':h.risk==='MEDIO'?'acc':'ok'}">Riesgo ${h.risk}</span>
+        <p style="margin:8px 0;font-size:13px"><strong>Tú preguntas:</strong></p>
+        <div class="ccard" style="padding:10px"><div class="prompt" style="margin:0">${esc(h.prompt)}</div></div>
+        <p style="margin:8px 0;font-size:13px"><strong>La IA responde:</strong></p>
+        <div class="out" style="margin:0;font-size:12px">${esc(h.fake_response)}</div>
+        ${ans ? `
+          <div style="margin-top:10px">
+            <span class="pill ${ok?'ok':'bad'}">${ok?'✓ +10':'✗ +0'}</span>
+            <p style="margin-top:8px;font-size:13px">${h.expl}</p>
+          </div>
+        ` : `
+          <div class="row" style="margin-top:10px">
+            <button class="btn cyan" onclick="hunt('${h.id}','si')">Confío</button>
+            <button class="btn alt" onclick="hunt('${h.id}','no')">Verifico</button>
+          </div>
+        `}
+      </div>
+    `;
+  }).join('');
+}
+function hunt(id, ans){
+  const h = HUNTER_CASES.find(x=>x.id===id);
+  state.hunts[id] = ans;
+  if(ans===h.ok) addPoints(10);
+  save();
+  if(Object.keys(state.hunts).length === HUNTER_CASES.length){
+    confetti();
+    if(!state._huntBadge){ state.badges.push('Cazador certificado'); state._huntBadge=true; save(); }
+  }
+  renderHunter(document.getElementById('app'));
+}
+
+/* ============================================================
+   PASO 6 · PUENTE PROPÓSITO + IA
+============================================================ */
+const USES = [
+  {id:'u1', t:'Profe paciente', d:'Que me explique lo que no entiendo, sin juzgar.', ej:'"Explícame X como si tuviera 12 años, con un ejemplo de mi vida."'},
+  {id:'u2', t:'Generador de prácticas', d:'Ejercicios o quices para entrenar.', ej:'"Hazme 10 ejercicios de X, de menos a más difícil, con respuestas al final."'},
+  {id:'u3', t:'Sparring para presentar', d:'Preguntas difíciles para preparar prueba oral.', ej:'"Hazme las 5 preguntas más probables que me harían sobre X."'},
+  {id:'u4', t:'Resumidor', d:'Capítulos, artículos o videos largos.', ej:'"Resúmeme este texto en 5 puntos para estudiante de 1° medio."'},
+  {id:'u5', t:'Plan de hábitos', d:'Rutina semanal alcanzable con tu tiempo.', ej:'"Hazme un plan de 4 semanas para X, con 1 acción concreta al día."'},
+  {id:'u6', t:'Corrector', d:'Revisar textos, mejorar redacción.', ej:'"Revisa este texto. Marca errores y dame versión mejorada."'}
+];
+function renderBridge(c){
+  c.innerHTML = `
+    <div class="card glow">
+      <span class="pill acc">PASO 6 · +15 PUNTOS</span>
+      <h1 style="margin-top:8px">Tu plan IA + propósito</h1>
+      <p>Marca los usos de IA que vas a aplicar a tu meta:</p>
+      <p class="hint"><strong style="color:var(--acc2)">Tu meta:</strong> ${esc(state.purpose||'(no escrito)')}</p>
+    </div>
+
+    <div id="uses"></div>
+
+    <button class="btn cyan" onclick="generatePlan()" style="margin-top:10px">Generar mi plan →</button>
+
+    <div id="planOut"></div>
+  `;
+  document.getElementById('uses').innerHTML = USES.map(u=>`
+    <div class="opt ${state.usesSel[u.id]?'sel':''}" onclick="toggleUse('${u.id}')">
+      <div class="lbl">${state.usesSel[u.id]?'✓ ':''}${u.t}</div>
+      <div class="txt">${u.d}</div>
+      <div class="hint" style="margin-top:4px;font-style:italic">Ej: ${u.ej}</div>
+    </div>
+  `).join('');
+  if(state.plan) showPlan(state.plan);
+}
+function toggleUse(id){
+  state.usesSel[id] = !state.usesSel[id];
+  save(); renderBridge(document.getElementById('app'));
+}
+function generatePlan(){
+  const sel = Object.keys(state.usesSel).filter(k=>state.usesSel[k]);
+  if(sel.length===0){ alert('Marca al menos un uso'); return; }
+  const lines = sel.map(k => {
+    const u = USES.find(x=>x.id===k);
+    return `• ${u.t}: ${u.d}\n  Ej: ${u.ej}`;
+  }).join('\n\n');
+  const plan = `MI PLAN IA + PROPÓSITO
+
+Meta a 6 meses: ${state.purpose}
+Tiempo disponible: ${state.time||'(no escrito)'}
+
+Cómo voy a usar la IA:
+
+${lines}
+
+Mi prompt base:
+${state.promptBuilt||'(volver al paso 3)'}
+
+Regla de oro: la IA es punto de partida, no de llegada. Siempre verifico lo importante.`;
+  state.plan = plan;
+  if(!state._p6Awarded){ addPoints(15,'Plan armado'); state._p6Awarded=true; }
+  save(); showPlan(plan);
+}
+function showPlan(p){
+  document.getElementById('planOut').innerHTML = `
+    <div class="card glow" style="margin-top:14px">
+      <h3 style="color:var(--ok)">✓ Tu plan</h3>
+      <div class="out">${esc(p)}<button class="cp" onclick="copyTxt(this,${JSON.stringify(p).replace(/"/g,'&quot;')})">Copiar</button></div>
+    </div>
+  `;
+}
+
+/* ============================================================
+   PASO 7 · COMPROMISO
+============================================================ */
+function renderCommit(c){
+  c.innerHTML = `
+    <div class="card acc">
+      <span class="pill acc">PASO 7 · +30 PUNTOS</span>
+      <h1 style="margin-top:8px">Tu compromiso</h1>
+      <p>Una cosa que SÍ esta semana, una que NO. Concretas.</p>
+    </div>
+
+    <div class="card glow">
+      <label>✓ Esta semana voy a usar la IA para...</label>
+      <textarea id="cDo" placeholder="Algo concreto. No 'estudiar más'. Mejor: 'practicar inglés 15 min al día con la IA'.">${esc(state.commitDo)}</textarea>
+
+      <label style="margin-top:12px">✗ Y voy a tener cuidado de NO...</label>
+      <textarea id="cDont" placeholder="Algo concreto. Ej: 'no copiar la tarea sin entenderla'.">${esc(state.commitDont)}</textarea>
+
+      <button class="btn" onclick="saveCommit()">Sellar mi compromiso →</button>
+    </div>
+  `;
+}
+function saveCommit(){
+  state.commitDo  = document.getElementById('cDo').value.trim();
+  state.commitDont= document.getElementById('cDont').value.trim();
+  if(!state.commitDo || !state.commitDont){ alert('Completa los dos'); return; }
+  if(!state._p7Awarded){ addPoints(30,'Compromiso sellado'); state._p7Awarded=true; }
+  save(); confetti(true); setTimeout(()=>nextStep(), 800);
+}
+
+/* ============================================================
+   CIERRE
+============================================================ */
+function renderClose(c){
+  const rank = state.score>=140?'IA MASTER': state.score>=100?'PRO': state.score>=60?'APRENDIZ':'NOVATO';
+  c.innerHTML = `
+    <div class="card glow" style="text-align:center;padding:24px 16px">
+      <div style="font-size:48px;margin-bottom:6px">🎯</div>
+      <h1>Listo.</h1>
+      <p class="big" style="margin-top:8px">La IA no reemplaza tu esfuerzo. Lo acelera.</p>
+      <div style="margin-top:14px">
+        <span class="pill acc" style="font-size:13px;padding:6px 14px">★ ${state.score} puntos · Rango: ${rank}</span>
+      </div>
+      ${state.badges.length?`<div style="margin-top:10px">${state.badges.map(b=>`<span class="badge">🏆 ${esc(b)}</span>`).join('')}</div>`:''}
+    </div>
+
+    <div class="card">
+      <h3>Tu resumen</h3>
+      <p style="font-size:13px"><strong>Meta:</strong> ${esc(state.purpose||'—')}</p>
+      <p style="font-size:13px"><strong>Sí voy a:</strong> ${esc(state.commitDo||'—')}</p>
+      <p style="font-size:13px"><strong>No voy a:</strong> ${esc(state.commitDont||'—')}</p>
+    </div>
+
+    <div class="card">
+      <h3>Para llevarte</h3>
+      <p style="font-size:13px">① Saber pedir > saber buscar.</p>
+      <p style="font-size:13px">② La IA inventa. Verifica lo importante.</p>
+      <p style="font-size:13px">③ No copies lo que no entiendes.</p>
+      <p style="font-size:13px">④ Tu propósito manda. La IA solo acompaña.</p>
+    </div>
+
+    <button class="btn cyan" onclick="exportAll()">Copiar mi resumen para WhatsApp</button>
+    <button class="btn ghost" onclick="reset()" style="margin-top:8px">Empezar otro</button>
+  `;
+}
+function exportAll(){
+  const txt = `MI TALLER IA · LOS MUERMOS
+Puntaje: ${state.score} pts ${state.badges.length?'· '+state.badges.length+' logros':''}
+
+🎯 Meta a 6 meses: ${state.purpose}
+😬 Qué me cuesta: ${state.obstacle}
+⏰ Tiempo: ${state.time}
+
+📝 MI PROMPT:
+${state.promptBuilt}
+
+📋 MI PLAN:
+${state.plan}
+
+🤝 COMPROMISO:
+✓ Sí voy a: ${state.commitDo}
+✗ No voy a: ${state.commitDont}`;
+  navigator.clipboard.writeText(txt).then(()=>alert('Copiado. Pégalo en WhatsApp o tus notas.'));
+}
+
+render();
+</script>
+</body>
+</html>
