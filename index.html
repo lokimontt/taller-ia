@@ -159,6 +159,157 @@
     padding: 40px;
   }
 
+  /* PANTALLA SELECCIÓN DE EDAD */
+  #screen-edad {
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+
+  .edad-content {
+    text-align: center;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+  }
+
+  .edad-titulo {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 800;
+    font-size: 52px;
+    line-height: 0.98;
+    color: var(--verde-muy-oscuro);
+    letter-spacing: -0.025em;
+  }
+
+  .edad-titulo .accent {
+    color: var(--verde);
+    font-style: italic;
+    font-weight: 700;
+  }
+
+  .edad-subtitulo {
+    font-size: 18px;
+    color: var(--texto-suave);
+    max-width: 620px;
+    line-height: 1.5;
+    font-weight: 500;
+  }
+
+  .edad-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+    width: 100%;
+    max-width: 760px;
+    margin-top: 6px;
+  }
+
+  .edad-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 30px 26px 26px;
+    border-radius: 26px;
+    background: white;
+    border: 2.5px solid rgba(45, 110, 45, 0.14);
+    box-shadow: var(--sombra);
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    font-family: 'Manrope', sans-serif;
+  }
+
+  .edad-card:hover { transform: translateY(-4px); box-shadow: var(--sombra-fuerte); }
+  .edad-card:active { transform: scale(0.98); }
+  .edad-card.ado:hover { border-color: var(--verde); }
+  .edad-card.ninos:hover { border-color: var(--amarillo-oscuro); }
+
+  .edad-card-emoji {
+    font-size: 60px;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .edad-card-tag {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 999px;
+    color: var(--verde-muy-oscuro);
+    background: var(--crema-oscuro);
+  }
+
+  .edad-card.ninos .edad-card-tag { background: #FBEFC6; color: #7A5A12; }
+
+  .edad-card-title {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 800;
+    font-size: 30px;
+    color: var(--verde-muy-oscuro);
+    letter-spacing: -0.02em;
+  }
+
+  .edad-card-desc {
+    font-size: 15px;
+    color: var(--texto-suave);
+    line-height: 1.45;
+    font-weight: 500;
+    max-width: 280px;
+  }
+
+  .edad-card-go {
+    margin-top: 8px;
+    font-weight: 800;
+    font-size: 16px;
+    color: var(--verde);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .edad-card.ninos .edad-card-go { color: var(--amarillo-oscuro); }
+
+  /* Badge de grupo en la pantalla de inicio */
+  .inicio-grupo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 8px 8px 18px;
+    border-radius: 999px;
+    background: white;
+    border: 1.5px solid rgba(45, 110, 45, 0.14);
+    box-shadow: 0 4px 12px rgba(31, 77, 31, 0.06);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--verde-muy-oscuro);
+  }
+
+  .inicio-cambiar {
+    border: none;
+    cursor: pointer;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--verde);
+    background: var(--crema-oscuro);
+    padding: 7px 14px;
+    border-radius: 999px;
+    transition: background 0.15s ease;
+  }
+
+  .inicio-cambiar:hover { background: #E6DFC2; }
+
+  @media (max-width: 620px) {
+    .edad-cards { grid-template-columns: 1fr; }
+    .edad-titulo { font-size: 40px; }
+  }
+
   .inicio-content {
     text-align: center;
     max-width: 820px;
@@ -796,13 +947,40 @@
 </head>
 <body>
 
+<!-- PANTALLA SELECCIÓN DE EDAD -->
+<div id="screen-edad" class="screen active">
+  <div class="edad-content">
+    <div class="inicio-eyebrow">Salud Mental Los Muermos</div>
+    <h1 class="edad-titulo">La <span class="accent">Ruleta</span> del Tabaco</h1>
+    <p class="edad-subtitulo">¿Quién va a jugar? Elige el grupo para ver preguntas hechas a su medida.</p>
+    <div class="edad-cards">
+      <button class="edad-card ado" onclick="seleccionarGrupo('ado')">
+        <span class="edad-card-emoji">🧑‍🎓</span>
+        <span class="edad-card-tag">13 años o más</span>
+        <span class="edad-card-title">Adolescentes</span>
+        <span class="edad-card-desc">Tabaco, vapeo, nicotina y salud mental, con datos de Chile.</span>
+        <span class="edad-card-go">Elegir →</span>
+      </button>
+      <button class="edad-card ninos" onclick="seleccionarGrupo('ninos')">
+        <span class="edad-card-emoji">🧒</span>
+        <span class="edad-card-tag">8 a 12 años</span>
+        <span class="edad-card-title">Niños y niñas</span>
+        <span class="edad-card-desc">Preguntas simples y entretenidas para cuidar tu cuerpo y decir "no".</span>
+        <span class="edad-card-go">Elegir →</span>
+      </button>
+    </div>
+  </div>
+  <div class="footer-mark">CESFAM Los Muermos · SALUD MENTAL APS</div>
+</div>
+
 <!-- PANTALLA INICIO -->
-<div id="screen-inicio" class="screen active">
+<div id="screen-inicio" class="screen">
   <div class="inicio-content">
     <img class="inicio-logo" src="data:image/jpeg;base64,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LiRlijyOQu5nI5CEVa+HfjDxp4mm1GHxn4ah8NPayBbcR6lFftcLzuYiJE8sDjAYknPQY5+frzQ/B/h3xrq+g6j8PL+7s4ILFLe5tbW5uhqUkcex3cRnycxqsa7mw5Oc4AGe28BfDC+uPiDafESTQYvB+m2FpNb2+nxspurl5yuZbvymaIBQvyIpZgSSzDG03Xw9KEPd/r8TPCZjjZ17y6OzS0X4p/mfUcfQmpKjjXaDzUleMz7NIKKKKQwooooAKKKKAP/R/fyiiigAooooAKKKKAGt05qMqD2qbrSYHpVJicU9yHnPA60bT2qfApMCjmC3QqeU3v8AnUwUBfTNTYFJgUN3BRS1QwLj60iqB71LgUmB6VJVyMqD1GaNqgYxwKkwPSjAov3FZLYiAVeAMUNgqQRwalwPSjA9KegEKohGMfhikbcOAcfhU+BS4FO4ttUQ5O3OCaanOSQRU+BRgDtRoGt9GQ+UjHdt5NSBQowOKfRUhZdhqgAYFOoooGFFFFABRRRQAUUUUAf/0v38ooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//T/fyiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/9k=" alt="CESFAM Los Muermos">
     <div class="inicio-eyebrow">Salud Mental Los Muermos</div>
     <h1 class="inicio-titulo">La <span class="accent">Ruleta</span><br>del Tabaco</h1>
-    <p class="inicio-subtitulo">Pon a prueba lo que sabes sobre tabaco, vapeo y salud mental. Por turnos: acumula aciertos, si fallas pasa el siguiente jugador.</p>
+    <div class="inicio-grupo">Grupo: <span id="inicio-grupo-label">Adolescentes</span><button class="inicio-cambiar" onclick="volverAEdad()">Cambiar</button></div>
+    <p class="inicio-subtitulo" id="inicio-subtitulo">Pon a prueba lo que sabes sobre tabaco, vapeo y salud mental. Por turnos: acumula aciertos, si fallas pasa el siguiente jugador.</p>
     <div class="categorias-grid" id="categorias-grid-inicio"></div>
     <button class="btn btn-primary" onclick="iniciarJuego()">
       Comenzar
@@ -1004,8 +1182,9 @@
 </div>
 
 <script>
+// ===== PREGUNTAS ADOLESCENTES (13+) =====
 // Categorías: "mitos" | "vapeo" | "nicotina" | "mente" | "chile" | "dejar"
-const QUESTIONS = [
+const QUESTIONS_ADO = [
   {
     cat: "nicotina",
     q: "La nicotina es una de las drogas más adictivas que existen, comparable a la cocaína y la heroína.",
@@ -1128,8 +1307,133 @@ const QUESTIONS = [
   }
 ];
 
-// Categorías visibles en la ruleta
-const CATEGORIES = [
+// ===== PREGUNTAS NIÑOS (8 a 12 años) =====
+// Categorías: "cuerpo" | "humo" | "verdad" | "valiente" | "curiosos" | "super"
+const QUESTIONS_NINOS = [
+  {
+    cat: "cuerpo",
+    q: "El humo del cigarro le hace daño a los pulmones y por eso cuesta más respirar y correr.",
+    a: true,
+    e: "¡Verdadero! Por eso muchos deportistas eligen no fumar: quieren pulmones fuertes para correr, saltar y jugar sin cansarse. 🏃"
+  },
+  {
+    cat: "cuerpo",
+    q: "Fumar puede dejar los dientes amarillos y provocar mal aliento.",
+    a: true,
+    e: "¡Verdadero! El humo mancha los dientes y deja un olor feo en la boca, la ropa y el pelo. 🦷"
+  },
+  {
+    cat: "cuerpo",
+    q: "El humo del cigarro no afecta para nada el olfato ni el sabor de la comida.",
+    a: false,
+    e: "Falso. Fumar hace que se sienta peor el olor y el sabor. ¡Te perderías lo rico de una fruta o un helado! 🍦"
+  },
+  {
+    cat: "cuerpo",
+    q: "La nicotina del cigarro hace que el corazón lata más rápido y trabaje de más.",
+    a: true,
+    e: "¡Verdadero! El corazón se acelera y se cansa más, incluso estando sentado tranquilo. ❤️"
+  },
+  {
+    cat: "humo",
+    q: "El humo del cigarro también daña a las personas que están al lado, aunque no estén fumando.",
+    a: true,
+    e: "¡Verdadero! Se llama 'humo de segunda mano'. Por eso no se debe fumar cerca de niños ni en lugares cerrados. 🚭"
+  },
+  {
+    cat: "humo",
+    q: "El vapor de los vapeadores es solo agua con sabor, así que no hace ningún daño.",
+    a: false,
+    e: "Falso. Aunque parezca vapor de agua, lleva químicos y muchas veces nicotina, que es una droga que hace daño. 💨"
+  },
+  {
+    cat: "humo",
+    q: "El humo del cigarro también puede enfermar a las mascotas de la casa.",
+    a: true,
+    e: "¡Verdadero! Perros, gatos y otros animales respiran ese humo y también se pueden enfermar. 🐶"
+  },
+  {
+    cat: "humo",
+    q: "Está permitido fumar dentro de la sala de clases o de un hospital.",
+    a: false,
+    e: "Falso. En Chile está prohibido fumar en colegios, hospitales y lugares cerrados para cuidar a todos. 🏥"
+  },
+  {
+    cat: "verdad",
+    q: "En los anuncios a veces muestran el cigarro como algo 'cool', aunque en realidad hace daño.",
+    a: true,
+    e: "¡Verdadero! Es un truco para vender. El cigarro no te hace más genial ni más grande, solo te enferma. 🎬"
+  },
+  {
+    cat: "verdad",
+    q: "Los cigarros o vapes con sabor a frutas o dulces son sanos porque saben rico.",
+    a: false,
+    e: "Falso. El sabor rico es una trampa para que más niños prueben; igual llevan químicos dañinos. 🍭"
+  },
+  {
+    cat: "verdad",
+    q: "Fumar te hace ser más grande, más valiente o más popular.",
+    a: false,
+    e: "Falso. Lo valiente es saber decir 'no'. Fumar no te hace mayor, solo te hace daño. 💪"
+  },
+  {
+    cat: "valiente",
+    q: "Si un amigo te ofrece un cigarro o un vape, está bien decir 'no, gracias'.",
+    a: true,
+    e: "¡Verdadero! Puedes decir que no con seguridad. Un buen amigo respeta tu decisión. ✋"
+  },
+  {
+    cat: "valiente",
+    q: "Si tienes dudas sobre el cigarro o el vapeo, es bueno preguntarle a un adulto de confianza.",
+    a: true,
+    e: "¡Verdadero! Tus papás, profes o el equipo de salud pueden ayudarte y responder tus dudas. 🧑‍🏫"
+  },
+  {
+    cat: "valiente",
+    q: "Hay que hacer todo lo que hacen los amigos, aunque sea algo peligroso.",
+    a: false,
+    e: "Falso. Tú decides lo que es bueno para ti. Cuidarte es más importante que copiar a los demás. 😊"
+  },
+  {
+    cat: "curiosos",
+    q: "El humo del cigarro tiene miles de sustancias químicas y varias son peligrosas.",
+    a: true,
+    e: "¡Verdadero! Tiene miles de químicos; algunos parecidos a los que se usan para limpiar o en las pilas. 🔋"
+  },
+  {
+    cat: "curiosos",
+    q: "En Chile está permitido venderles cigarros y vapes a los niños.",
+    a: false,
+    e: "Falso. La ley prohíbe vender cigarros y vapeadores a menores de 18 años. 🚫"
+  },
+  {
+    cat: "curiosos",
+    q: "La nicotina es una droga que hace muy difícil dejar de fumar una vez que se empieza.",
+    a: true,
+    e: "¡Verdadero! Por eso lo mejor es nunca empezar: así el cuerpo nunca queda 'enganchado'. 🎣"
+  },
+  {
+    cat: "super",
+    q: "Hacer deporte, tomar agua y dormir bien ayudan a tener un cuerpo sano y fuerte.",
+    a: true,
+    e: "¡Verdadero! Jugar, moverte y descansar bien te dan energía. ¡Eso sí es ser un súper tú! ⚽💧"
+  },
+  {
+    cat: "super",
+    q: "Las colillas y el humo del cigarro ayudan a la naturaleza y limpian el aire.",
+    a: false,
+    e: "Falso. Las colillas contaminan el agua y la tierra, y el humo ensucia el aire que respiramos. 🌱"
+  },
+  {
+    cat: "super",
+    q: "La mayoría de las personas en el mundo elige NO fumar.",
+    a: true,
+    e: "¡Verdadero! Aunque a veces parezca que muchos fuman, la mayoría prefiere cuidarse y no hacerlo. 🌍"
+  }
+];
+
+// Categorías visibles en la ruleta — ADOLESCENTES
+const CATEGORIES_ADO = [
   { id: "mitos",    label: "MITOS",     full: "Mitos del tabaco",         color: "#D64545", textColor: "#FFFFFF", icon: "⚠" },
   { id: "vapeo",    label: "VAPEO",     full: "Vapeo y cigarrillos electrónicos", color: "#E0A82E", textColor: "#FFFFFF", icon: "💨" },
   { id: "nicotina", label: "NICOTINA",  full: "Nicotina y adicción",      color: "#7BC043", textColor: "#1F4D1F", icon: "⚡" },
@@ -1138,10 +1442,42 @@ const CATEGORIES = [
   { id: "dejar",    label: "DEJAR",     full: "Dejar de fumar",           color: "#F5C842", textColor: "#1F4D1F", icon: "🌿" }
 ];
 
+// Categorías visibles en la ruleta — NIÑOS (8 a 12)
+const CATEGORIES_NINOS = [
+  { id: "cuerpo",   label: "MI CUERPO", full: "Cómo afecta mi cuerpo",  color: "#D64545", textColor: "#FFFFFF", icon: "🫁" },
+  { id: "humo",     label: "EL HUMO",   full: "El humo y el vapeo",     color: "#E0A82E", textColor: "#FFFFFF", icon: "💨" },
+  { id: "verdad",   label: "¿VERDAD?",  full: "¿Verdad o mito?",        color: "#7BC043", textColor: "#1F4D1F", icon: "🔍" },
+  { id: "valiente", label: "VALIENTE",  full: "Saber decir que no",     color: "#5CA135", textColor: "#FFFFFF", icon: "✋" },
+  { id: "curiosos", label: "CURIOSOS",  full: "Datos curiosos",         color: "#2D6E2D", textColor: "#FFFFFF", icon: "🐝" },
+  { id: "super",    label: "SÚPER YO",  full: "Súper saludable",        color: "#F5C842", textColor: "#1F4D1F", icon: "💪" }
+];
+
+// Sets activos (se asignan al elegir el grupo)
+let QUESTIONS = QUESTIONS_ADO;
+let CATEGORIES = CATEGORIES_ADO;
+
+// Configuración por grupo de edad
+const GRUPOS = {
+  ado: {
+    questions: QUESTIONS_ADO,
+    categories: CATEGORIES_ADO,
+    label: "Adolescentes",
+    subtitulo: "Pon a prueba lo que sabes sobre tabaco, vapeo y salud mental. Por turnos: acumula aciertos, si fallas pasa el siguiente jugador."
+  },
+  ninos: {
+    questions: QUESTIONS_NINOS,
+    categories: CATEGORIES_NINOS,
+    label: "Niños y niñas · 8 a 12",
+    subtitulo: "Preguntas simples y entretenidas para aprender a cuidar tu cuerpo y decir \"¡no, gracias!\". Por turnos: junta aciertos y pásale al siguiente si fallas."
+  }
+};
+
 const SEGMENTOS = 6;       // 6 categorías en la ruleta
 const ANGULO_SEG = 360 / SEGMENTOS;
 
 let state = {
+  grupo: null,
+  total: QUESTIONS.length,
   playerNum: 1,
   score: 0,
   pool: [],
@@ -1297,10 +1633,34 @@ function construirCategoriasInicio() {
   `).join('');
 }
 
+// SELECCIÓN DE GRUPO DE EDAD
+function seleccionarGrupo(grupo) {
+  sndButton();
+  getAudio();
+  const g = GRUPOS[grupo];
+  if (!g) return;
+  state.grupo = grupo;
+  QUESTIONS = g.questions;
+  CATEGORIES = g.categories;
+  state.total = QUESTIONS.length;
+  // Reconstruimos ruleta y listas con las categorías del grupo elegido
+  construirRuleta();
+  construirCategoriasInicio();
+  document.getElementById('inicio-subtitulo').textContent = g.subtitulo;
+  document.getElementById('inicio-grupo-label').textContent = g.label;
+  showScreen('screen-inicio');
+}
+
+function volverAEdad() {
+  sndButton();
+  showScreen('screen-edad');
+}
+
 // JUEGO
 function iniciarJuego() {
   sndButton();
   getAudio();
+  state.total = QUESTIONS.length;
   state.playerNum = 1;
   state.score = 0;
   state.pool = shuffle([...QUESTIONS]);
@@ -1399,7 +1759,7 @@ function mostrarPregunta() {
   aplicarCategoriaEnCard(cat, 'pregunta');
   document.getElementById('pregunta-texto').textContent = state.currentQ.q;
   document.getElementById('pregunta-num').textContent =
-    `Pregunta ${state.totalAnswered} de 20`;
+    `Pregunta ${state.totalAnswered} de ${state.total}`;
   actualizarStats();
   state.answered = false;
   showScreen('screen-pregunta');
@@ -1512,13 +1872,15 @@ function continuar() {
 
 function finalizar() {
   const msg = document.getElementById('final-mensaje');
-  msg.textContent = `Se respondieron las 20 preguntas. Jugó hasta el jugador ${state.playerNum}. Reinicia para una nueva ronda con preguntas en orden aleatorio.`;
+  msg.textContent = `Se respondieron las ${state.total} preguntas. Jugó hasta el jugador ${state.playerNum}. Reinicia para una nueva ronda con preguntas en orden aleatorio.`;
   showScreen('screen-final');
 }
 
 function reiniciar() {
   sndButton();
   state = {
+    grupo: null,
+    total: QUESTIONS.length,
     playerNum: 1,
     score: 0,
     pool: [],
@@ -1535,7 +1897,7 @@ function reiniciar() {
   setTimeout(() => {
     svg.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.18, 1)';
   }, 50);
-  showScreen('screen-inicio');
+  showScreen('screen-edad');
 }
 
 // Init
